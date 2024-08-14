@@ -15,8 +15,27 @@ datasource db {
 
 model User {
   id String @id @default(uuid())
-  name String 
+  password String
+  name String
   document String @unique 
 
   @@map("users")
+}
+
+model Consulta {
+  id String @id @default(uuid())
+  hash String
+  status String
+  laudo String
+  medicoId String
+
+  medico Medico @relation(fields: [medicoId], references: [id])
+}
+
+model Medico {
+  id String @id @default(uuid())
+  name String
+  especialidade String
+
+  consultas Consulta[]
 }
