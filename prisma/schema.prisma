@@ -18,6 +18,7 @@ model User {
   password String
   name String
   document String @unique 
+  sessions  Session[]
 
   @@map("users")
 }
@@ -38,4 +39,14 @@ model Medico {
   especialidade String
 
   consultas Consulta[]
+}
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+
+  @@index([token], name: "token_idx")
 }
