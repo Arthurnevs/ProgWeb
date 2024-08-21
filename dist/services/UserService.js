@@ -8,24 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-const UserService_1 = require("../services/UserService");
-class UserController {
+exports.UserService = void 0;
+const UserRepository_1 = require("../repositories/UserRepository");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+class UserService {
     constructor() {
-        this.userService = new UserService_1.UserService();
+        this.userRepository = new UserRepository_1.UserRepository();
     }
-    create(request, response) {
+    createUser(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield this.userService.createUser(request.body);
-                return response.status(201).json(user);
-            }
-            catch (error) {
-                console.error('Error creating user:', error);
-                return response.status(500).json({ error: 'Internal Server Error' });
-            }
+            const hashedPassword = yield bcrypt_1.default.hash(data.password, 10);
+            return yield this.userRepository.createUser(Object.assign(Object.assign({}, data), { password: hashedPassword }));
         });
     }
 }
-exports.UserController = UserController;
+exports.UserService = UserService;

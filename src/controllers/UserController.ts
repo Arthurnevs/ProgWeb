@@ -1,43 +1,70 @@
-import { Request, Response } from 'express'
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt'
-import {AuthController} from "./AuthController";
+import { Request, Response } from 'express';
+import { UserService } from '../services/UserService';
 
 export class UserController {
-    private prismaClient: PrismaClient;
-    private authController: AuthController;
+    private userService: UserService;
 
     constructor() {
-        this.prismaClient = new PrismaClient();
-        this.authController = new AuthController()
+        this.userService = new UserService();
     }
 
-    async create(request: Request, response: Response){
-        const { name, document, password } = request.body
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-        
-        const user =  await this.prismaClient.user.create({
-            data: {
-                name,
-                document,
-                password: hashedPassword
-            }
-        })
-
-        return response.json(user)
+    async create(request: Request, response: Response) {
+        try {
+            const user = await this.userService.createUser(request.body);
+            return response.status(201).json(user);
+        } catch (error) {
+            console.error('Error creating user:', error);
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 
-    async registerDoctor(request: Request, response: Response){
-        const { name, especialidade } = request.body
+    async getUser(request: Request, response: Response) {
+        try {
+            const { id } = request.params;
+            const user = await this.userService.getUserById(id);
 
-        const doctor = await this.prismaClient.medico.create({
-            data: {
-                name: name,
-                especialidade: especialidade
+            if (!user) {
+                return response.status(404).json({ message: 'User not found' });
             }
-        })
 
-        return response.json(doctor)
+            return response.status(200).json(user);
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async updateUser(request: Request, response: Response) {
+        try {
+            const { id } = request.params;
+            const user = await this.userService.updateUser(id, request.body);
+
+            return response.status(200).json(user);
+        } catch (error) {
+            console.error('Error updating user:', error);
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async deleteUser(request: Request, response: Response) {
+        try {
+            const { id } = request.params;
+            await this.userService.deleteUser(id);
+
+            return response.status(204).send();
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async listUsers(request: Request, response: Response) {
+        try {
+            const users = await this.userService.listUsers();
+            return response.status(200).json(users);
+        } catch (error) {
+            console.error('Error listing users:', error);
+            return response.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 }

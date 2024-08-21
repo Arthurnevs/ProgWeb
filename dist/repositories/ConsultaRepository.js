@@ -9,23 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-const UserService_1 = require("../services/UserService");
-class UserController {
+exports.ConsultaRepository = void 0;
+const client_1 = require("@prisma/client");
+class ConsultaRepository {
     constructor() {
-        this.userService = new UserService_1.UserService();
+        this.prismaClient = new client_1.PrismaClient();
     }
-    create(request, response) {
+    createConsulta(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield this.userService.createUser(request.body);
-                return response.status(201).json(user);
-            }
-            catch (error) {
-                console.error('Error creating user:', error);
-                return response.status(500).json({ error: 'Internal Server Error' });
-            }
+            return yield this.prismaClient.consulta.create({
+                data,
+            });
         });
     }
 }
-exports.UserController = UserController;
+exports.ConsultaRepository = ConsultaRepository;

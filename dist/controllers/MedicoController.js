@@ -9,23 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-const UserService_1 = require("../services/UserService");
-class UserController {
+exports.MedicoController = void 0;
+const MedicoService_1 = require("../services/MedicoService");
+class MedicoController {
     constructor() {
-        this.userService = new UserService_1.UserService();
+        this.medicoService = new MedicoService_1.MedicoService();
     }
-    create(request, response) {
+    registerDoctor(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.userService.createUser(request.body);
-                return response.status(201).json(user);
+                const { name, especialidade } = request.body;
+                const doctor = yield this.medicoService.registerDoctor({ name, especialidade });
+                return response.status(201).json(doctor);
             }
             catch (error) {
-                console.error('Error creating user:', error);
+                console.error('Error registering doctor:', error);
                 return response.status(500).json({ error: 'Internal Server Error' });
             }
         });
     }
 }
-exports.UserController = UserController;
+exports.MedicoController = MedicoController;

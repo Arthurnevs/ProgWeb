@@ -9,23 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-const UserService_1 = require("../services/UserService");
-class UserController {
+exports.ConsultaService = void 0;
+const ConsultaRepository_1 = require("../repositories/ConsultaRepository");
+const uuid_1 = require("uuid");
+class ConsultaService {
     constructor() {
-        this.userService = new UserService_1.UserService();
+        this.consultaRepository = new ConsultaRepository_1.ConsultaRepository();
     }
-    create(request, response) {
+    registerConsulta(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield this.userService.createUser(request.body);
-                return response.status(201).json(user);
-            }
-            catch (error) {
-                console.error('Error creating user:', error);
-                return response.status(500).json({ error: 'Internal Server Error' });
-            }
+            const payload = {
+                hash: (0, uuid_1.v4)(),
+                status: 'PENDING',
+                laudo: '',
+                medicoId: data.medicoId,
+                dataConsulta: new Date(data.date),
+            };
+            return yield this.consultaRepository.createConsulta(payload);
         });
     }
 }
-exports.UserController = UserController;
+exports.ConsultaService = ConsultaService;

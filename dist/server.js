@@ -13,6 +13,7 @@ const userController = new UserController_1.UserController();
 const authController = new AuthController_1.AuthController();
 app.post('/user/create', (req, res) => userController.create(req, res));
 app.post('/user/create/doctor', authController.validateToken.bind(authController), (req, res) => userController.registerDoctor(req, res));
+app.post('/user/register-consult', authController.validateToken.bind(authController), (req, res) => userController.registerConsulta(req, res));
 app.post('/user/login', (req, res) => authController.login(req, res));
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);

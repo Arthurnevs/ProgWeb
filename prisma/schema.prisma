@@ -9,44 +9,45 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(uuid())
-  password String
-  name String
-  document String @unique 
-  sessions  Session[]
+    id String @id @default(uuid())
+    password String
+    name String
+    document String @unique
+    sessions  Session[]
 
-  @@map("users")
+    @@map("users")
 }
 
 model Consulta {
-  id String @id @default(uuid())
-  hash String
-  status String
-  laudo String
-  medicoId String
+    id String @id @default(uuid())
+    hash String
+    status String
+    laudo String
+    medicoId String
+    dataConsulta DateTime
 
-  medico Medico @relation(fields: [medicoId], references: [id])
+    medico Medico @relation(fields: [medicoId], references: [id])
 }
 
 model Medico {
-  id String @id @default(uuid())
-  name String
-  especialidade String
+    id String @id @default(uuid())
+    name String
+    especialidade String
 
-  consultas Consulta[]
+    consultas Consulta[]
 }
 
 model Session {
-  id        Int       @id @default(autoincrement())
-  token     String    @unique
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  expiresAt DateTime
+    id        Int       @id @default(autoincrement())
+    token     String    @unique
+    userId    String
+    user      User      @relation(fields: [userId], references: [id])
+    expiresAt DateTime
 
-  @@index([token], name: "token_idx")
+    @@index([token], name: "token_idx")
 }

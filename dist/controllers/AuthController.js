@@ -8,51 +8,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const uuid_1 = require("uuid");
-const client_1 = require("@prisma/client");
+const AuthService_1 = require("../services/AuthService");
 class AuthController {
     constructor() {
-        this.prismaClient = new client_1.PrismaClient();
+        this.authService = new AuthService_1.AuthService();
     }
     login(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { document, password } = request.body;
-            const user = yield this.prismaClient.user.findUnique({
-                where: { document }
-            });
-            if (user && (yield bcrypt_1.default.compare(password, user.password))) {
-                const token = (0, uuid_1.v4)();
-                yield this.prismaClient.session.create({
-                    data: {
-                        token,
-                        userId: user.id,
-                        expiresAt: new Date(Date.now() + 3600 * 1000)
-                    }
-                });
-                return response.json({ message: 'Login successful', token });
+            try {
+                const { document, password } = request.body;
+                const result = yield this.authService.login(document, password);
+                if (result.success) {
+                    return response.json({ message: 'Login successful', token: result.token });
+                }
+                else {
+                    return response.status(401).json({ message: 'Invalid credentials' });
+                }
             }
-            else {
-                return response.status(401).json({ message: 'Invalid credentials' });
+            catch (error) {
+                console.error('Error during login:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
     }
     validateToken(request, response, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = request.headers['token'];
-            if (!token) {
-                return response.status(401).json({ message: 'Token is missing' });
-            }
             try {
-                const session = yield this.prismaClient.session.findUnique({
-                    where: { token: token }
-                });
-                if (session && session.expiresAt > new Date()) {
+                const token = request.headers['token'];
+                const isValid = yield this.authService.validateToken(token);
+                if (isValid) {
                     return next();
                 }
                 else {
@@ -60,6 +46,7 @@ class AuthController {
                 }
             }
             catch (error) {
+                console.error('Error validating token:', error);
                 return response.status(500).json({ message: 'Internal Server Error' });
             }
         });
