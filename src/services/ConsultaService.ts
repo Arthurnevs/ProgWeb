@@ -1,5 +1,6 @@
 import { ConsultaRepository } from '../repositories/ConsultaRepository';
 import { v4 as uuidv4 } from 'uuid';
+import ConsultaStatus from "../enums/ConsultaStatusEnum";
 
 export class ConsultaService {
     private consultaRepository: ConsultaRepository;
@@ -11,7 +12,7 @@ export class ConsultaService {
     async registerConsulta(data: { medicoId: string; date: string }) {
         const payload = {
             hash: uuidv4(),
-            status: 'PENDING',
+            status: ConsultaStatus.Pendente,
             laudo: '',
             medicoId: data.medicoId,
             dataConsulta: new Date(data.date),
@@ -24,7 +25,7 @@ export class ConsultaService {
         return await this.consultaRepository.findById(id);
     }
 
-    async updateConsulta(id: string, data: Partial<{ status: string; laudo: string; medicoId: string; dataConsulta: Date }>) {
+    async updateConsulta(id: string, data: Partial<{ status: string; laudo: string; medicoId: string;}>) {
         return await this.consultaRepository.updateConsulta(id, data);
     }
 

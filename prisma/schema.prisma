@@ -30,6 +30,7 @@ model Consulta {
     laudo String
     medicoId String
     dataConsulta DateTime
+    tipo String
 
     medico Medico @relation(fields: [medicoId], references: [id])
 }

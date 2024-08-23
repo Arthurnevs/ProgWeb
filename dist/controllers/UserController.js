@@ -27,5 +27,59 @@ class UserController {
             }
         });
     }
+    getUser(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                const user = yield this.userService.getUserById(id);
+                if (!user) {
+                    return response.status(404).json({ message: 'User not found' });
+                }
+                return response.status(200).json(user);
+            }
+            catch (error) {
+                console.error('Error fetching user:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+    updateUser(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                const user = yield this.userService.updateUser(id, request.body);
+                return response.status(200).json(user);
+            }
+            catch (error) {
+                console.error('Error updating user:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+    deleteUser(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                yield this.userService.deleteUser(id);
+                return response.status(204).send();
+            }
+            catch (error) {
+                console.error('Error deleting user:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+    listUsers(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const users = yield this.userService.listUsers();
+                return response.status(200).json(users);
+            }
+            catch (error) {
+                console.error('Error listing users:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
 }
 exports.UserController = UserController;

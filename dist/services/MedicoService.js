@@ -20,5 +20,25 @@ class MedicoService {
             return yield this.medicoRepository.createMedico(data);
         });
     }
+    getDoctorById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.medicoRepository.findById(id);
+        });
+    }
+    updateDoctor(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.medicoRepository.updateMedico(id, data);
+        });
+    }
+    deleteDoctor(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.medicoRepository.deleteMedico(id);
+        });
+    }
+    listDoctors() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.medicoRepository.listMedicos();
+        });
+    }
 }
 exports.MedicoService = MedicoService;

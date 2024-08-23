@@ -51,5 +51,30 @@ class AuthController {
             }
         });
     }
+    logout(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = request.headers['token'];
+                yield this.authService.logout(token);
+                return response.status(204).send();
+            }
+            catch (error) {
+                console.error('Error logging out:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
+        });
+    }
+    listSessions(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const sessions = yield this.authService.listSessions();
+                return response.status(200).json(sessions);
+            }
+            catch (error) {
+                console.error('Error listing sessions:', error);
+                return response.status(500).json({ message: 'Internal Server Error' });
+            }
+        });
+    }
 }
 exports.AuthController = AuthController;

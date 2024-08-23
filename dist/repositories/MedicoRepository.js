@@ -15,11 +15,38 @@ class MedicoRepository {
     constructor() {
         this.prismaClient = new client_1.PrismaClient();
     }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.medico.findUnique({
+                where: { id },
+            });
+        });
+    }
     createMedico(data) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.prismaClient.medico.create({
                 data,
             });
+        });
+    }
+    updateMedico(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.medico.update({
+                where: { id },
+                data,
+            });
+        });
+    }
+    deleteMedico(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.medico.delete({
+                where: { id },
+            });
+        });
+    }
+    listMedicos() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.medico.findMany();
         });
     }
 }

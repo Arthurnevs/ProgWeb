@@ -28,5 +28,59 @@ class ConsultaController {
             }
         });
     }
+    getConsulta(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                const consulta = yield this.consultaService.getConsultaById(id);
+                if (!consulta) {
+                    return response.status(404).json({ message: 'Consulta not found' });
+                }
+                return response.status(200).json(consulta);
+            }
+            catch (error) {
+                console.error('Error fetching consulta:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+    updateConsulta(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                const updatedConsulta = yield this.consultaService.updateConsulta(id, request.body);
+                return response.status(200).json(updatedConsulta);
+            }
+            catch (error) {
+                console.error('Error updating consulta:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+    deleteConsulta(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = request.params;
+                yield this.consultaService.deleteConsulta(id);
+                return response.status(204).send();
+            }
+            catch (error) {
+                console.error('Error deleting consulta:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
+    listConsultas(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const consultas = yield this.consultaService.listConsultas();
+                return response.status(200).json(consultas);
+            }
+            catch (error) {
+                console.error('Error listing consultas:', error);
+                return response.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    }
 }
 exports.ConsultaController = ConsultaController;

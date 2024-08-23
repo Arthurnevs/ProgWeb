@@ -28,5 +28,25 @@ class ConsultaService {
             return yield this.consultaRepository.createConsulta(payload);
         });
     }
+    getConsultaById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.consultaRepository.findById(id);
+        });
+    }
+    updateConsulta(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.consultaRepository.updateConsulta(id, data);
+        });
+    }
+    deleteConsulta(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.consultaRepository.deleteConsulta(id);
+        });
+    }
+    listConsultas() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.consultaRepository.listConsultas();
+        });
+    }
 }
 exports.ConsultaService = ConsultaService;

@@ -15,6 +15,13 @@ class UserRepository {
     constructor() {
         this.prismaClient = new client_1.PrismaClient();
     }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.user.findUnique({
+                where: { id },
+            });
+        });
+    }
     findByDocument(document) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.prismaClient.user.findUnique({
@@ -27,6 +34,26 @@ class UserRepository {
             return yield this.prismaClient.user.create({
                 data,
             });
+        });
+    }
+    updateUser(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.user.update({
+                where: { id },
+                data,
+            });
+        });
+    }
+    deleteUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.user.delete({
+                where: { id },
+            });
+        });
+    }
+    listUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.user.findMany();
         });
     }
 }

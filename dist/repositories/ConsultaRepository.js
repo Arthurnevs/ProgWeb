@@ -15,11 +15,38 @@ class ConsultaRepository {
     constructor() {
         this.prismaClient = new client_1.PrismaClient();
     }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.consulta.findUnique({
+                where: { id },
+            });
+        });
+    }
     createConsulta(data) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.prismaClient.consulta.create({
                 data,
             });
+        });
+    }
+    updateConsulta(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.consulta.update({
+                where: { id },
+                data,
+            });
+        });
+    }
+    deleteConsulta(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.consulta.delete({
+                where: { id },
+            });
+        });
+    }
+    listConsultas() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.consulta.findMany();
         });
     }
 }

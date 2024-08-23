@@ -16,9 +16,11 @@ exports.AuthService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
 const client_1 = require("@prisma/client");
+const SessionRepository_1 = require("../repositories/SessionRepository");
 class AuthService {
     constructor() {
         this.prismaClient = new client_1.PrismaClient();
+        this.sessionRepository = new SessionRepository_1.SessionRepository();
     }
     login(document, password) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -27,12 +29,10 @@ class AuthService {
             });
             if (user && (yield bcrypt_1.default.compare(password, user.password))) {
                 const token = (0, uuid_1.v4)();
-                yield this.prismaClient.session.create({
-                    data: {
-                        token,
-                        userId: user.id,
-                        expiresAt: new Date(Date.now() + 3600 * 1000), // Token válido por 1 hora
-                    },
+                yield this.sessionRepository.createSession({
+                    token,
+                    userId: user.id,
+                    expiresAt: new Date(Date.now() + 3600 * 1000), // Token válido por 1 hora
                 });
                 return { success: true, token };
             }
@@ -46,10 +46,18 @@ class AuthService {
             if (!token) {
                 return false;
             }
-            const session = yield this.prismaClient.session.findUnique({
-                where: { token },
-            });
+            const session = yield this.sessionRepository.findSessionByToken(token);
             return session && session.expiresAt > new Date();
+        });
+    }
+    logout(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sessionRepository.deleteSession(token);
+        });
+    }
+    listSessions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.sessionRepository.listSessions();
         });
     }
 }

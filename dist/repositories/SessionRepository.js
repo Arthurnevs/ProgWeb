@@ -29,5 +29,17 @@ class SessionRepository {
             });
         });
     }
+    deleteSession(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.session.delete({
+                where: { token },
+            });
+        });
+    }
+    listSessions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prismaClient.session.findMany();
+        });
+    }
 }
 exports.SessionRepository = SessionRepository;

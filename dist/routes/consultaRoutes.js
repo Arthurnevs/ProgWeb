@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const ConsultaController_1 = require("../controllers/ConsultaController");
+const router = (0, express_1.Router)();
+const consultaController = new ConsultaController_1.ConsultaController();
+router.post('/consultas', (req, res) => consultaController.registerConsulta(req, res));
+router.get('/consultas/:id', (req, res) => consultaController.getConsulta(req, res));
+router.put('/consultas/:id', (req, res) => consultaController.updateConsulta(req, res));
+router.delete('/consultas/:id', (req, res) => consultaController.deleteConsulta(req, res));
+router.get('/consultas', (req, res) => consultaController.listConsultas(req, res));
+exports.default = router;

@@ -21,8 +21,33 @@ class UserService {
     }
     createUser(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Hash da senha antes de salvar
             const hashedPassword = yield bcrypt_1.default.hash(data.password, 10);
-            return yield this.userRepository.createUser(Object.assign(Object.assign({}, data), { password: hashedPassword }));
+            const user = yield this.userRepository.createUser(Object.assign(Object.assign({}, data), { password: hashedPassword }));
+            return user;
+        });
+    }
+    getUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.findById(id);
+        });
+    }
+    updateUser(id, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (data.password) {
+                data.password = yield bcrypt_1.default.hash(data.password, 10);
+            }
+            return yield this.userRepository.updateUser(id, data);
+        });
+    }
+    deleteUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.deleteUser(id);
+        });
+    }
+    listUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.listUsers();
         });
     }
 }
