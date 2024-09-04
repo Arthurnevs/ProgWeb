@@ -1,16 +1,13 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -18,7 +15,6 @@ model User {
     password String
     name String
     document String @unique
-    sessions  Session[]
 
     @@map("users")
 }
@@ -30,7 +26,7 @@ model Consulta {
     laudo String
     medicoId String
     dataConsulta DateTime
-    tipo String
+    tipo String @default("")
 
     medico Medico @relation(fields: [medicoId], references: [id])
 }
@@ -41,14 +37,4 @@ model Medico {
     especialidade String
 
     consultas Consulta[]
-}
-
-model Session {
-    id        Int       @id @default(autoincrement())
-    token     String    @unique
-    userId    String
-    user      User      @relation(fields: [userId], references: [id])
-    expiresAt DateTime
-
-    @@index([token], name: "token_idx")
 }

@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const MedicoController_1 = require("../controllers/MedicoController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const router = (0, express_1.Router)();
+const medicoController = new MedicoController_1.MedicoController();
+router.post('/medicos', authMiddleware_1.authenticateToken, (req, res) => medicoController.registerDoctor(req, res));
+router.get('/medicos/:id', authMiddleware_1.authenticateToken, (req, res) => medicoController.getDoctor(req, res));
+router.put('/medicos/:id', authMiddleware_1.authenticateToken, (req, res) => medicoController.updateDoctor(req, res));
+router.delete('/medicos/:id', authMiddleware_1.authenticateToken, (req, res) => medicoController.deleteDoctor(req, res));
+router.get('/medicos', authMiddleware_1.authenticateToken, (req, res) => medicoController.listDoctors(req, res));
+exports.default = router;

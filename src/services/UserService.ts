@@ -1,5 +1,6 @@
 import { UserRepository } from '../repositories/UserRepository';
 import bcrypt from 'bcrypt';
+import {ValidationService} from "./ValidationService";
 
 export class UserService {
     private userRepository: UserRepository;
@@ -8,8 +9,27 @@ export class UserService {
         this.userRepository = new UserRepository();
     }
 
+    private validateUserData(data: { name: string; document: string; password: string }) {
+        const errors: string[] = [];
+
+        const nameError = ValidationService.isRequired(data.name, 'Name');
+        if (nameError) errors.push(nameError);
+
+        const documentError = ValidationService.isRequired(data.document, 'Document') || ValidationService.isDocumentValid(data.document);
+        if (documentError) errors.push(documentError);
+
+        const passwordError = ValidationService.isRequired(data.password, 'Password') || ValidationService.isMinLength(data.password, 'Password', 8);
+        if (passwordError) errors.push(passwordError);
+
+        return errors;
+    }
+
     async createUser(data: { name: string; document: string; password: string }) {
-        // Hash da senha antes de salvar
+        const validationErrors = this.validateUserData(data);
+        if (validationErrors.length > 0) {
+            throw new Error(`Validation failed: ${validationErrors.join(' ')}`);
+        }
+
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
         const user = await this.userRepository.createUser({

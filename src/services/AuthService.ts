@@ -1,15 +1,14 @@
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
-import { SessionRepository } from '../repositories/SessionRepository';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 export class AuthService {
     private prismaClient: PrismaClient;
-    private sessionRepository: SessionRepository;
 
     constructor() {
         this.prismaClient = new PrismaClient();
-        this.sessionRepository = new SessionRepository();
     }
 
     async login(document: string, password: string) {
@@ -18,12 +17,11 @@ export class AuthService {
         });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            const token = uuidv4();
-            await this.sessionRepository.createSession({
-                token,
-                userId: user.id,
-                expiresAt: new Date(Date.now() + 3600 * 1000), // Token válido por 1 hora
-            });
+            const token = jwt.sign(
+                { userId: user.id, document: user.document },
+                JWT_SECRET,
+                { expiresIn: '1h' } // Token válido por 1 hora
+            );
 
             return { success: true, token };
         } else {
@@ -32,19 +30,11 @@ export class AuthService {
     }
 
     async validateToken(token: string) {
-        if (!token) {
+        try {
+            const decoded = jwt.verify(token, JWT_SECRET);
+            return !!decoded;
+        } catch (error) {
             return false;
         }
-
-        const session = await this.sessionRepository.findSessionByToken(token);
-        return session && session.expiresAt > new Date();
-    }
-
-    async logout(token: string) {
-        return await this.sessionRepository.deleteSession(token);
-    }
-
-    async listSessions() {
-        return await this.sessionRepository.listSessions();
     }
 }

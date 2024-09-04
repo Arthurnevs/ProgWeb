@@ -26,7 +26,13 @@ export class AuthController {
 
     async validateToken(request: Request, response: Response, next: NextFunction) {
         try {
-            const token = request.headers['token'] as string;
+            const authHeader = request.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1];
+
+            if (!token) {
+                return response.status(401).json({ message: 'Token not provided' });
+            }
+
             const isValid = await this.authService.validateToken(token);
 
             if (isValid) {
@@ -36,27 +42,6 @@ export class AuthController {
             }
         } catch (error) {
             console.error('Error validating token:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
-        }
-    }
-
-    async logout(request: Request, response: Response) {
-        try {
-            const token = request.headers['token'] as string;
-            await this.authService.logout(token);
-            return response.status(204).send();
-        } catch (error) {
-            console.error('Error logging out:', error);
-            return response.status(500).json({ message: 'Internal Server Error' });
-        }
-    }
-
-    async listSessions(request: Request, response: Response) {
-        try {
-            const sessions = await this.authService.listSessions();
-            return response.status(200).json(sessions);
-        } catch (error) {
-            console.error('Error listing sessions:', error);
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }
