@@ -1,13 +1,14 @@
 {
   "name": "progweb",
   "version": "1.0.0",
+  "type": "module",
   "description": "Projeto da Disciplina ProgWeb - UFCG",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node --loader ts-node/esm src/index.ts",
     "run": "npm run build && npm start"
   },
   "keywords": [],
@@ -15,18 +16,24 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.18.0",
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
+    "chai": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "sinon": "^18.0.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/bcrypt": "^5.0.2",
+    "@types/chai": "^4.3.19",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.11",
+    "@types/sinon": "^17.0.3",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.16.1",
     "@typescript-eslint/parser": "^7.16.1",

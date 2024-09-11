@@ -1,22 +1,20 @@
-
 {
-    "compilerOptions": {
-      "target": "ES6", // ou "ES2015"
-      "module": "commonjs",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "outDir": "./dist"
-    },
-
-    "include": [
-        "./**/*.ts", "server.js"
-    ],
-    
-    "exclude": [
-      "dist",
-      "node_modules",
-      "**/*.spec.ts"
-    ]
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": [
+    "./src/**/*.ts", "server.js"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }
-   
