@@ -1,6 +1,8 @@
 import { UserRepository } from '../repositories/UserRepository';
 import bcrypt from 'bcrypt';
 import {ValidationService} from "./ValidationService";
+import {ValidationError} from "../errors/validationError";
+
 
 export class UserService {
     private userRepository: UserRepository;
@@ -27,7 +29,7 @@ export class UserService {
     async createUser(data: { name: string; document: string; password: string }) {
         const validationErrors = this.validateUserData(data);
         if (validationErrors.length > 0) {
-            throw new Error(`Validation failed: ${validationErrors.join(' ')}`);
+            return Promise.reject(new ValidationError(validationErrors.join(' ')));
         }
 
         const hashedPassword = await bcrypt.hash(data.password, 10);

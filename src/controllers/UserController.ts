@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/UserService';
+import {ValidationError} from "../errors/validationError";
 
 export class UserController {
     private userService: UserService;
@@ -13,7 +14,9 @@ export class UserController {
             const user = await this.userService.createUser(request.body);
             return response.status(201).json(user);
         } catch (error) {
-            console.error('Error creating user:', error);
+            if (error instanceof ValidationError) {
+                return response.status(400).json({ error: error.message });
+            }
             return response.status(500).json({ error: 'Internal Server Error' });
         }
     }
