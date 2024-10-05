@@ -10,4 +10,8 @@ export const listConsults = (config = {}) => {
   return api.get('/consultas', config);
 };
 
+export const listDoctors = (config) => api.get('/medicos', config);
+
+export const createDoctor = (data) => api.post('/medicos', data);
+
 export default api;

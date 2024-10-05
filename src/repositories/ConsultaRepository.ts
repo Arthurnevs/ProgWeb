@@ -33,6 +33,14 @@ export class ConsultaRepository {
     }
 
     async listConsultas(): Promise<Consulta[]> {
-        return await this.prismaClient.consulta.findMany();
+        return await this.prismaClient.consulta.findMany({
+            include: {
+                medico: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
+        });
     }
 }
