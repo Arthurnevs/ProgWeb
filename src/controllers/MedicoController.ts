@@ -10,8 +10,8 @@ export class MedicoController {
 
     async registerDoctor(request: Request, response: Response) {
         try {
-            const { name, especialidade } = request.body;
-            const doctor = await this.medicoService.registerDoctor({ name, especialidade });
+            const { name, especialidade, document, password } = request.body;
+            const doctor = await this.medicoService.registerDoctor({ name, especialidade, document, password });
             return response.status(201).json(doctor);
         } catch (error) {
             console.error('Error registering doctor:', error);

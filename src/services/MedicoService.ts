@@ -1,4 +1,5 @@
 import { MedicoRepository } from '../repositories/MedicoRepository';
+import bcrypt from "bcrypt";
 
 export class MedicoService {
     private medicoRepository: MedicoRepository;
@@ -7,8 +8,13 @@ export class MedicoService {
         this.medicoRepository = new MedicoRepository();
     }
 
-    async registerDoctor(data: { name: string; especialidade: string }) {
-        return await this.medicoRepository.createMedico(data);
+    async registerDoctor(data: { name: string; especialidade: string, document: string, password: string }) {
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        return await this.medicoRepository.createMedico({
+            ...data,
+            password: hashedPassword,  // Substitui a senha original pela hash
+        });
     }
 
     async getDoctorById(id: string) {

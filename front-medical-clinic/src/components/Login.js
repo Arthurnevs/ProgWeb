@@ -15,6 +15,9 @@ const Login = () => {
             if (response.status === 200) {
                 const data = await response.data;
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('userType', data.userType); // Armazenar o tipo de usuário
+                localStorage.setItem('userId', data.userId);
+
                 setMessage('Login bem-sucedido!');
                 navigate('/home');
             }

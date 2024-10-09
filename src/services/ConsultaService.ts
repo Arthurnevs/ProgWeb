@@ -36,4 +36,17 @@ export class ConsultaService {
     async listConsultas() {
         return await this.consultaRepository.listConsultas();
     }
+
+    async listConsultasByMedico(medicoId: string) {
+        return await this.consultaRepository.listConsultasByMedico(medicoId);
+    }
+    async addLaudo(id: string, laudo: string) {
+        return await this.consultaRepository.addLaudo(id, laudo);
+    }
+
+    async getResultExame(hash: string) {
+        return await this.consultaRepository.getResultExame(hash);
+    }
+
+
 }

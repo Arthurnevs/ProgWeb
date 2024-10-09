@@ -13,7 +13,7 @@ export class MedicoRepository {
         });
     }
 
-    async createMedico(data: { name: string; especialidade: string }): Promise<Medico> {
+    async createMedico(data: { name: string; especialidade: string, document: string, password: string }): Promise<Medico> {
         return await this.prismaClient.medico.create({
             data,
         });

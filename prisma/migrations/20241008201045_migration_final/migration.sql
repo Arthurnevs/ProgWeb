@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Medico" ADD COLUMN     "document" TEXT NOT NULL DEFAULT '123456',
+ADD COLUMN     "password" TEXT NOT NULL DEFAULT '123456';

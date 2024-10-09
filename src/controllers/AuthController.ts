@@ -14,7 +14,12 @@ export class AuthController {
             const result = await this.authService.login(document, password);
 
             if (result.success) {
-                return response.json({ message: 'Login successful', token: result.token });
+                return response.json({
+                    message: 'Login successful',
+                    token: result.token,
+                    userType: result.userType,  // Adiciona o userType na resposta
+                    userId: result.userId,
+                });
             } else {
                 return response.status(401).json({ message: 'Invalid credentials' });
             }
@@ -23,6 +28,7 @@ export class AuthController {
             return response.status(500).json({ message: 'Internal Server Error' });
         }
     }
+
 
     async validateToken(request: Request, response: Response, next: NextFunction) {
         try {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { listDoctors, createDoctor } from "../services/api";
+import { listDoctors, createDoctor, deleteDoctor } from "../services/api"; // Adicione deleteDoctor
 import Navbar from "./Navbar";
 import AddDoctorModal from './AddDoctorModal';
 
@@ -38,6 +38,31 @@ const Doctors = () => {
         fetchDoctors();
     }, [navigate]);
 
+    const handleDeleteDoctor = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setMessage('You are not authenticated!');
+                navigate('/login');
+                return;
+            }
+
+            const response = await deleteDoctor(id, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.status === 200) {
+                setDoctors(doctors.filter(doctor => doctor.id !== id)); // Remove o médico da lista local
+                setMessage('Médico deletado com sucesso.');
+            } else {
+                setMessage('Falha ao deletar o médico.');
+            }
+        } catch (error) {
+            setMessage('Erro ao deletar o médico.');
+        }
+    };
+
     return (
         <>
             <Navbar />
@@ -53,6 +78,7 @@ const Doctors = () => {
                                     <th className="px-4 py-2">ID</th>
                                     <th className="px-4 py-2">Nome</th>
                                     <th className="px-4 py-2">Especialidade</th>
+                                    <th className="px-4 py-2">Ações</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -61,6 +87,14 @@ const Doctors = () => {
                                         <td className="px-4 py-2">{doctor.id}</td>
                                         <td className="px-4 py-2">{doctor.name}</td>
                                         <td className="px-4 py-2">{doctor.especialidade}</td>
+                                        <td className="px-4 py-2">
+                                            <button
+                                                onClick={() => handleDeleteDoctor(doctor.id)}
+                                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                            >
+                                                Excluir
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>

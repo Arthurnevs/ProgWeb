@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { listConsults, getConsultById, listDoctors, createConsult } from '../services/api'; // Adicionar createConsult e listDoctors
+import { listConsultsByDoctor, getConsultById, addLaudo } from '../services/api';
 import Navbar from './Navbar';
 
-const Consults = () => {
+const ConsultsMedico = () => {
     const [consultas, setConsultas] = useState([]);
-    const [doctors, setDoctors] = useState([]); // Adicionar médicos ao estado
     const [message, setMessage] = useState('');
     const [selectedConsult, setSelectedConsult] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [showCreateModal, setShowCreateModal] = useState(false); // Estado para exibir o modal de criação
-    const [medicoId, setMedicoId] = useState(''); // Estado para o ID do médico selecionado
-    const [date, setDate] = useState(''); // Estado para a data da consulta
+    const [laudo, setLaudo] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,7 +21,8 @@ const Consults = () => {
                     return;
                 }
 
-                const response = await listConsults({
+                const medicoId = localStorage.getItem('userId');
+                const response = await listConsultsByDoctor(medicoId, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -42,31 +40,6 @@ const Consults = () => {
         fetchConsultas();
     }, [navigate]);
 
-    // Buscar a lista de médicos quando o modal de criação é aberto
-    useEffect(() => {
-        const fetchDoctors = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await listDoctors({
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                if (response.status === 200) {
-                    setDoctors(response.data);
-                } else {
-                    setMessage('Failed to fetch doctors.');
-                }
-            } catch (error) {
-                setMessage('Error fetching doctors.');
-            }
-        };
-
-        if (showCreateModal) {
-            fetchDoctors();
-        }
-    }, [showCreateModal]);
-
     const handleConsultClick = async (id) => {
         try {
             const token = localStorage.getItem('token');
@@ -77,6 +50,7 @@ const Consults = () => {
             });
             if (response.status === 200) {
                 setSelectedConsult(response.data);
+                setLaudo(response.data.laudo || ''); // Carrega o laudo existente, se houver
                 setShowModal(true);
             } else {
                 setMessage('Failed to fetch consult details.');
@@ -86,22 +60,23 @@ const Consults = () => {
         }
     };
 
-    const handleCreateConsult = async () => {
+    const handleAddLaudo = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await createConsult({ medicoId, date }, {
+            const response = await addLaudo(selectedConsult.id, { laudo }, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            if (response.status === 201) {
-                setMessage('Consulta criada com sucesso!');
-                setShowCreateModal(false);
+            if (response.status === 200) {
+                setMessage('Laudo adicionado com sucesso!');
+                setShowModal(false);
+                setLaudo(''); // Limpa o campo de laudo após a adição
             } else {
-                setMessage('Falha ao criar consulta.');
+                setMessage('Falha ao adicionar laudo.');
             }
         } catch (error) {
-            setMessage('Erro ao criar consulta.');
+            setMessage('Erro ao adicionar laudo.');
         }
     };
 
@@ -112,12 +87,6 @@ const Consults = () => {
                 <div className="bg-white p-8 rounded shadow-md max-w-6xl w-full">
                     <h2 className="text-2xl font-bold mb-6 text-center">Consultas</h2>
                     {message && <p className="text-red-500">{message}</p>}
-                    <button
-                        onClick={() => setShowCreateModal(true)}
-                        className="bg-green-500 text-white px-4 py-2 rounded mb-4"
-                    >
-                        Criar Consulta
-                    </button>
                     {consultas.length > 0 ? (
                         <div className="overflow-x-auto">
                             <table className="min-w-full table-auto">
@@ -129,6 +98,7 @@ const Consults = () => {
                                     <th className="px-4 py-2">Médico</th>
                                     <th className="px-4 py-2">Data da Consulta</th>
                                     <th className="px-4 py-2">Tipo</th>
+                                    <th className="px-4 py-2">Ação</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -148,6 +118,14 @@ const Consults = () => {
                                         <td className="px-4 py-2">
                                             {consulta.tipo || 'Não especificado'}
                                         </td>
+                                        <td className="px-4 py-2">
+                                            <button
+                                                onClick={() => handleConsultClick(consulta.id)}
+                                                className="bg-blue-500 text-white px-2 py-1 rounded"
+                                            >
+                                                 Adicionar Laudo
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -159,54 +137,7 @@ const Consults = () => {
                 </div>
             </div>
 
-            {/* Modal de criação de consulta */}
-            {showCreateModal && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-                        <h3 className="text-xl font-bold mb-4">Criar Nova Consulta</h3>
-                        <div className="mb-4">
-                            <label htmlFor="medicoId" className="block mb-2">Selecione o Médico</label>
-                            <select
-                                id="medicoId"
-                                className="border border-gray-300 p-2 w-full rounded"
-                                value={medicoId}
-                                onChange={(e) => setMedicoId(e.target.value)}
-                            >
-                                <option value="">Selecione</option>
-                                {doctors.map((doctor) => (
-                                    <option key={doctor.id} value={doctor.id}>
-                                        {doctor.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="date" className="block mb-2">Data da Consulta</label>
-                            <input
-                                id="date"
-                                type="datetime-local"
-                                className="border border-gray-300 p-2 w-full rounded"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                            />
-                        </div>
-                        <button
-                            onClick={handleCreateConsult}
-                            className="bg-green-500 text-white px-4 py-2 rounded"
-                        >
-                            Criar
-                        </button>
-                        <button
-                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                            onClick={() => setShowCreateModal(false)}
-                        >
-                            Fechar
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Modal para exibir os detalhes da consulta */}
+            {/* Modal para exibir os detalhes da consulta e adicionar laudo */}
             {showModal && selectedConsult && (
                 <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
@@ -218,6 +149,22 @@ const Consults = () => {
                         <p><strong>Tipo:</strong> {selectedConsult.tipo || 'Não especificado'}</p>
                         <p><strong>Médico ID:</strong> {selectedConsult.medicoId}</p>
                         <p><strong>Laudo:</strong> <span className="text-red-500">{selectedConsult.laudo || 'Nenhum laudo disponível'}</span></p>
+
+                        <div className="mb-4">
+                            <label htmlFor="laudo" className="block mb-2">Adicionar Laudo</label>
+                            <textarea
+                                id="laudo"
+                                className="border border-gray-300 p-2 w-full rounded"
+                                value={laudo}
+                                onChange={(e) => setLaudo(e.target.value)}
+                            />
+                        </div>
+                        <button
+                            onClick={handleAddLaudo}
+                            className="bg-green-500 text-white px-4 py-2 rounded"
+                        >
+                            Adicionar
+                        </button>
                         <button
                             className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
                             onClick={() => setShowModal(false)}
@@ -231,4 +178,4 @@ const Consults = () => {
     );
 };
 
-export default Consults;
+export default ConsultsMedico;

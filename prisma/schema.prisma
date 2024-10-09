@@ -32,9 +32,11 @@ model Consulta {
 }
 
 model Medico {
-    id String @id @default(uuid())
-    name String
+    id           String @id @default(uuid())
+    name         String
     especialidade String
-
-    consultas Consulta[]
+    document     String @unique  // Define o campo como único
+    password     String
+    consultas    Consulta[]
 }
+
