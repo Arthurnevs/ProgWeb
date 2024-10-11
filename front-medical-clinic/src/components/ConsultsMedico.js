@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { listConsultsByDoctor, getConsultById, addLaudo } from '../services/api';
 import Navbar from './Navbar';
 
+/**
+ *
+ * É responsável por gerenciar e exibir a lista de consultas de um médico. Ele permite que
+ * os médicos visualizem suas consultas, acessem detalhes específicos de cada consulta e adicionem laudos (relatórios)
+ * relacionados a essas consultas.
+ */
 const ConsultsMedico = () => {
     const [consultas, setConsultas] = useState([]);
     const [message, setMessage] = useState('');

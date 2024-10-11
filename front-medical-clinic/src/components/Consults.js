@@ -3,6 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { listConsults, getConsultById, listDoctors, createConsult } from '../services/api'; // Adicionar createConsult e listDoctors
 import Navbar from './Navbar';
 
+/**
+ * Este componente é responsável por listar, criar e visualizar detalhes de consultas médicas. Ele faz as seguintes ações principais:
+ *
+ * Listagem de consultas: Carrega uma lista de consultas disponíveis ao usuário após verificar o token de autenticação.
+ * Visualização de detalhes: Permite ao usuário clicar em uma consulta para ver mais detalhes, exibidos em um modal.
+ * Criação de consultas: Fornece uma opção para criar uma nova consulta, abrindo um modal onde o usuário seleciona o médico e a data da consulta.
+ *
+ */
 const Consults = () => {
     const [consultas, setConsultas] = useState([]);
     const [doctors, setDoctors] = useState([]); // Adicionar médicos ao estado

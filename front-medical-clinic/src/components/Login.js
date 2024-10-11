@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {loginUser} from "../services/api";
 
+/**
+ * Componente de Login
+ *
+ * Este componente é responsável por renderizar o formulário de login, capturar os dados de documento e senha
+ * fornecidos pelo usuário, e enviar esses dados para o backend para autenticação.
+ * Se o login for bem-sucedido, o token de autenticação, o tipo de usuário e o ID do usuário são armazenados
+ * no localStorage e o usuário é redirecionado para a página 'Home'. Caso contrário, uma mensagem de erro é exibida.
+ */
 const Login = () => {
     const [document, setDocument] = useState('');
     const [password, setPassword] = useState('');

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Este componente exibe uma barra de navegação que varia de acordo com o tipo de usuário logado.
+ * Os tipos de usuários suportados são "user" e "medico".
+ * Além disso, fornece uma opção de logout.
+ */
 const Navbar = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('');

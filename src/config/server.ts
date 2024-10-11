@@ -4,7 +4,6 @@ import cors from 'cors';
 export function createServer(): Application {
     const app = express();
 
-    // Middlewares globais
     app.use(cors());
     app.use(express.json());
 

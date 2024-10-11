@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import {registerUser} from "../services/api";
 
+/**
+ * Componente de Registro de Usuário
+ *
+ * Este componente é responsável por renderizar o formulário de registro de um novo usuário.
+ * O formulário coleta informações como nome, documento e senha, e ao ser submetido, envia
+ * uma requisição para registrar o usuário no backend. Uma mensagem de sucesso ou erro é exibida
+ * com base no resultado da tentativa de registro.
+ */
 const Register = () => {
     const [name, setName] = useState('');
     const [document, setDocument] = useState('');

@@ -4,6 +4,13 @@ import { listDoctors, createDoctor, deleteDoctor } from "../services/api"; // Ad
 import Navbar from "./Navbar";
 import AddDoctorModal from './AddDoctorModal';
 
+/**
+ * Este componente exibe uma lista de médicos, permitindo que os usuários:
+ * - Visualizem todos os médicos cadastrados.
+ * - Deletam médicos da lista.
+ * - Abram um modal para adicionar um novo médico.
+ *
+ */
 const Doctors = () => {
     const [doctors, setDoctors] = useState([]);
     const [message, setMessage] = useState('');

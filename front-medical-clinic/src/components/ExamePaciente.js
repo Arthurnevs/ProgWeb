@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getConsultByHash } from "../services/api";
 
+/**
+ * Permite que os pacientes visualizem os resultados de seus exames
+ * utilizando um código de consulta (hash).
+ */
 const ExamePaciente = () => {
     const [hash, setHash] = useState('');
     const [consulta, setConsulta] = useState(null);
